@@ -6,10 +6,10 @@ node {
     def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
     def SFDC_USERNAME
 
-    def HUB_ORG=env.HUB_ORG_DH
-    def SFDC_HOST = env.SFDC_HOST_DH
-    def JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
-    def CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_DH
+    def HUB_ORG='a.gandhi@salesforce.com.developer'
+    def SFDC_HOST = 'https://test.salesforce.com'
+    def JWT_KEY_CRED_ID = '47e939a7-7bd0-464b-9d1c-3fed5f3b960e'
+    def CONNECTED_APP_CONSUMER_KEY= '3MVG9jnZi5GMCfE5r1R69zSIvfdMm8NyQ7c8ouJNp6lRHBKyZiguaVhF3K2iWp8HvYil74kgKhxEfBeFvNNNS'
 
     println 'KEY IS' 
     println JWT_KEY_CRED_ID
@@ -35,15 +35,15 @@ node {
 			println rc
 			
 			// need to pull out assigned username
-			if (isUnix()) {
+			/*if (isUnix()) {
 				rmsg = sh returnStdout: true, script: "${toolbelt} force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
 			}else{
 			   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
-			}
+			}*/
 			  
-            printf rmsg
+            //printf rmsg
             println('Hello from a Job DSL script!')
-            println(rmsg)
+            //println(rmsg)
         }
     }
 }
