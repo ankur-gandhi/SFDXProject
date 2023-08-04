@@ -4,25 +4,17 @@ node {
 
     def BUILD_NUMBER=env.BUILD_NUMBER
     def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
-    def SFDC_USERNAME
-
-    def SF_USERNAME='a.gandhi@salesforce.com.developer'
-    def SF_INSTANCE_URL = 'https://test.salesforce.com'
-    def server_key_file = '47e939a7-7bd0-464b-9d1c-3fed5f3b960e'
-    def SF_CONSUMER_KEY= '3MVG9jnZi5GMCfE5r1R69zSIvfdMm8NyQ7c8ouJNp6lRHBKyZiguaVhF3K2iWp8HvYil74kgKhxEfBeFvNNNS'
+    def SF_USERNAME='a.gandhi@playful-narwhal-v5gbyo.com'
+    def SF_INSTANCE_URL = 'https://playful-narwhal-v5gbyo-dev-ed.my.salesforce.com'
+    def server_key_file = '3469184a-b3d7-436c-ad0d-86b9ffe96e6a'
+    def SF_CONSUMER_KEY= '3MVG9wt4IL4O5wvIOhUs.8yhyCQiTRs.Y5M4Egwxn8Ep23d2boKVR4TsPM6RJxfIuDD.qepAE59p6cU7spXpZ'
     def ORG_ALIAS = 'SNZ-DEV-Jenkins'
-
-    println 'KEY IS' 
-    println server_key_file
-    println SF_USERNAME
-    println SF_INSTANCE_URL
-    println SF_CONSUMER_KEY
-    println ORG_ALIAS
     def toolbelt = tool 'toolbelt'
+    def SFDX_PATH = '/usr/local/bin'
 
     stage('checkout source') {
         // when running in multi-branch job, one must issue this command
-        //checkout scm
+        checkout scm
     }
 
     withCredentials([file(credentialsId: server_key_file, variable: 'jwt_key_file')]) {
@@ -43,27 +35,19 @@ node {
             // -------------------------------------------------------------------------
             // Perform Login
             // -------------------------------------------------------------------------
-            rc = command "/usr/local/bin/sfdx force:auth:jwt:grant --instanceurl ${SF_INSTANCE_URL} --clientid ${SF_CONSUMER_KEY} --username ${SF_USERNAME} --jwtkeyfile ${server_key_file} --setdefaultdevhubusername --setalias "+ORG_ALIAS
+            rc = sh returnStatus: true, script: "\"${SFDX_PATH}/sfdx\" auth:jwt:grant --clientid ${SF_CONSUMER_KEY} --username ${SF_USERNAME} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SF_INSTANCE_URL}"
+            println rc
             if (rc != 0) {
                 error 'Salesforce org authorization failed.'
             }
         }
         stage('Deploye Code') {
-            /*if (isUnix()) {
-                rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${jwt_key_file} --instanceurl ${SFDC_HOST}"
-            }else{
-                 rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --instanceurl ${SFDC_HOST}"
-            }
-            if (rc != 0) { error 'hub org authorization failed' }
-
-			println rc
-			
-			// need to pull out assigned username
-			/*if (isUnix()) {
-				rmsg = sh returnStdout: true, script: "${toolbelt} force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
+            // need to pull out assigned username
+			if (isUnix()) {
+				rmsg = sh returnStdout: true, script: "${SFDX_PATH}/sfdx force:mdapi:deploy -d manifest/. -u ${SF_USERNAME}"
 			}else{
-			   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
-			}*/
+			   rmsg = bat returnStdout: true, script: "\"${SFDX_PATH}/sfdx\" force:mdapi:deploy -d manifest/. -u ${SF_USERNAME}"
+			}
 			  
             //printf rmsg
             println('Hello from a Job DSL script!')
