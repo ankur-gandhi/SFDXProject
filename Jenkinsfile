@@ -25,7 +25,7 @@ node {
         checkout scm
     }
 
-    withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
+    withCredentials([file(credentialsId: server_key_file, variable: 'jwt_key_file')]) {
         stage('Connect to ORG'){
             // -------------------------------------------------------------------------
             // Handle Error by performing a logout, just before the login
