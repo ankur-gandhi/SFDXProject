@@ -22,7 +22,7 @@ node {
 
     stage('checkout source') {
         // when running in multi-branch job, one must issue this command
-        checkout scm
+        //checkout scm
     }
 
     withCredentials([file(credentialsId: server_key_file, variable: 'jwt_key_file')]) {
