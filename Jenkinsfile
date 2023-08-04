@@ -44,9 +44,9 @@ node {
         stage('Deploye Code') {
             // need to pull out assigned username
 			if (isUnix()) {
-				rmsg = sh returnStdout: true, script: "${SFDX_PATH}/sfdx force:mdapi:deploy -d manifest/. -u ${SF_USERNAME}"
+				rmsg = sh returnStdout: true, script: "${SFDX_PATH}/sfdx force:source:deploy -d manifest/package.xml -u ${SF_USERNAME}"
 			}else{
-			   rmsg = bat returnStdout: true, script: "\"${SFDX_PATH}/sfdx\" force:mdapi:deploy -d manifest/. -u ${SF_USERNAME}"
+			   rmsg = bat returnStdout: true, script: "\"${SFDX_PATH}/sfdx\" force:source:deploy -d manifest/package.xml -u ${SF_USERNAME}"
 			}
 			  
             //printf rmsg
